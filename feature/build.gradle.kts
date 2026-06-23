@@ -12,6 +12,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     // โยงไปยัง Core Module ของโปรเจกต์
     // implementation(project(":core:ui"))
