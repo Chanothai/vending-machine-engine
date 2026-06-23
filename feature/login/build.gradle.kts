@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.aidevelopment.feature.login"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
