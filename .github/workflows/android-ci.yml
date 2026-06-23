@@ -1,0 +1,48 @@
+name: Android CI (Unit Test & Lint)
+
+# กำหนดว่าหุ่นยนต์จะตื่นขึ้นมาทำงานตอนไหน
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Run Lint and Unit Tests
+    runs-on: ubuntu-latest # ใช้ Server Linux ของ GitHub
+
+    steps:
+      # 1. ดึงโค้ดของเรามาไว้ใน Server
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. ติดตั้ง Java JDK (Android ใช้ Java ในการ Build)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin' # ใช้ Temurin ซึ่งเสถียรและนิยมในระดับ Enterprise
+
+      # 3. Setup Gradle พร้อมเปิดโหมด Caching (Best Practice ที่ทำให้ CI รันเร็วขึ้น 50%)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: wrapper
+
+      # 4. ให้สิทธิ์รันไฟล์ gradlew
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 5. check format and security.
+      # 🛡️ Layer 1: The Format Gatekeeper (ถ้าโค้ดไม่สวย เตะทิ้งตรงนี้เลย จะได้ไม่เปลืองเวลา)
+      - name: Run Ktlint (Code Style & Formatting Check)
+        run: ./gradlew ktlintCheck
+
+      # 🛡️ Layer 2: The Architecture Guard (ตรวจจับช่องโหว่ความปลอดภัยเบื้องต้น)
+      - name: Run Android Lint (Static Code Analysis)
+        run: ./gradlew lintDebug
+
+      # 🛡️ Layer 3: The Business Logic Proof (รันเทสต์ลอจิกตู้กดน้ำ)
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
