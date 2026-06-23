@@ -1,0 +1,15 @@
+# 🚫 บล็อกไฟล์ที่เก็บรหัสผ่านหรือ API Keys
+local.properties
+secrets.xml
+*.key
+*.pem
+
+# 🚫 บล็อกไฟล์ Keystore ที่ใช้ Signing App
+*.jks
+*.keystore
+
+# 🚫 บล็อกไฟล์ขนาดใหญ่หรือไฟล์ที่ Auto-generate
+/build/
+/.gradle/
+*.sqlite
+*.db
