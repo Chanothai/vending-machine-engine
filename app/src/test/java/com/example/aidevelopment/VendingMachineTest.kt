@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("Vending Machine Core Logic Tests")
 class VendingMachineTest {
-
     private lateinit var inventory: InventoryRepository
     private lateinit var vault: VaultRepository
     private lateinit var changeCalculator: ChangeCalculator
@@ -38,7 +37,6 @@ class VendingMachineTest {
     @Nested
     @DisplayName("insertCoin() tests")
     inner class InsertCoinTests {
-
         @Test
         @DisplayName("Should increase balance when valid coins are inserted")
         fun insertValidCoins() {
@@ -60,7 +58,6 @@ class VendingMachineTest {
     @Nested
     @DisplayName("selectProduct() tests")
     inner class SelectProductTests {
-
         @Test
         @DisplayName("Should dispense product and return change when conditions are met")
         fun successfulPurchase() {
@@ -68,7 +65,7 @@ class VendingMachineTest {
             val product = Product.COLA // Price 15
             vendingMachine.insertCoin(10)
             vendingMachine.insertCoin(10) // Total 20
-            
+
             every { inventory.getStock(product) } returns 5
             every { vault.getSnapshot() } returns mapOf(Coin.FIVE to 10)
             every { changeCalculator.calculateChange(Currency(5), any()) } returns listOf(Coin.FIVE)
@@ -89,7 +86,7 @@ class VendingMachineTest {
         fun productOutOfStock() {
             vendingMachine.insertCoin(10)
             vendingMachine.insertCoin(10)
-            
+
             every { inventory.getStock(Product.COLA) } returns 0
 
             assertThatThrownBy { vendingMachine.selectProduct("COLA") }
@@ -100,7 +97,7 @@ class VendingMachineTest {
         @DisplayName("Should throw InsufficientFundsException when balance is too low")
         fun insufficientFunds() {
             vendingMachine.insertCoin(10)
-            
+
             every { inventory.getStock(Product.COLA) } returns 5
 
             assertThatThrownBy { vendingMachine.selectProduct("COLA") }
@@ -113,7 +110,7 @@ class VendingMachineTest {
             // Setup: Buy Water (10) with 15 (inserted 10 + 5)
             vendingMachine.insertCoin(10)
             vendingMachine.insertCoin(5)
-            
+
             every { inventory.getStock(Product.WATER) } returns 5
             every { vault.getSnapshot() } returns emptyMap()
             // Change needed is 5, but vault is empty
@@ -141,13 +138,12 @@ class VendingMachineTest {
     @Nested
     @DisplayName("cancelRequest() tests")
     inner class CancelRequestTests {
-
         @Test
         @DisplayName("Should refund full balance and reset to Idle state")
         fun cancelTransaction() {
             vendingMachine.insertCoin(10)
             vendingMachine.insertCoin(5)
-            
+
             val refund = vendingMachine.cancelRequest()
 
             assertThat(refund).isEqualTo(15)
@@ -185,10 +181,11 @@ class VendingMachineTest {
         @Test
         @DisplayName("GIVEN vault is missing denominations or out of stock THEN skip and attempt others")
         fun skipUnavailableCoins() {
-            val vault = mapOf(
-                Coin.TEN to 0, // Out of stock branch: (tempVault[coin] ?: 0) > 0 is false
-                Coin.FIVE to 1 // ONE is missing from map: (tempVault[coin] ?: 0) defaults to 0
-            )
+            val vault =
+                mapOf(
+                    Coin.TEN to 0,
+                    Coin.FIVE to 1,
+                )
 
             // Attempt 10: Skips TEN (stock), uses FIVE (stock 1), fails for remaining 5 (no ONE)
             assertThat(calculator.calculateChange(Currency(10), vault)).isNull()
@@ -277,5 +274,4 @@ class VendingMachineTest {
             assertThat(snapshot[Coin.TEN]).isEqualTo(repository.getCoinCount(Coin.TEN))
         }
     }
-
 }

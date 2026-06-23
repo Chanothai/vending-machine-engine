@@ -14,7 +14,10 @@ class InMemoryInventoryRepository : InventoryRepository {
         if (current > 0) stock[product] = current - 1
     }
 
-    override fun setStock(product: Product, quantity: Int) {
+    override fun setStock(
+        product: Product,
+        quantity: Int,
+    ) {
         stock[product] = quantity
     }
 }

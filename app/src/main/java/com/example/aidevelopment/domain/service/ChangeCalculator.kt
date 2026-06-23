@@ -10,7 +10,7 @@ import com.example.aidevelopment.domain.model.Currency
 class ChangeCalculator {
     fun calculateChange(
         amountNeeded: Currency,
-        availableVault: Map<Coin, Int>
+        availableVault: Map<Coin, Int>,
     ): List<Coin>? {
         if (amountNeeded.amount == 0) return emptyList()
 

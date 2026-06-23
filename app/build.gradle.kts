@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 android {
@@ -25,7 +26,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -39,6 +40,12 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+ktlint {
+    android.set(true) // บังคับใช้ Rule ที่เหมาะกับ Android SDK
+    outputToConsole.set(true) // ให้ปรินต์ Error ออกมาให้เห็นในหน้า Terminal ชัดๆ
+    ignoreFailures.set(false) // ถ้าจัดหน้าผิด บังคับให้ Build พัง (ห้ามปล่อยผ่าน!)
 }
 
 dependencies {

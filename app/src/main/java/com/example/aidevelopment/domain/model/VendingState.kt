@@ -5,6 +5,6 @@ sealed interface VendingState {
 
     data class HasBalance(
         val balance: Currency,
-        val insertedCoins: List<Coin>
+        val insertedCoins: List<Coin>,
     ) : VendingState
 }
